@@ -43,7 +43,7 @@ class DashWifiManager(
     companion object {
         private const val TAG              = "DashWifiManager"
         private const val CONNECT_TIMEOUT  = 30_000  // ms — Android shows system dialog within this
-        private const val RECONNECT_DELAY  = 4_000L
+        private const val RECONNECT_DELAY  = 8_000L
         // Android returns this sentinel from WifiInfo.getSsid() when it can't read the SSID.
         private const val WifiManagerUnknownSsid = "<unknown ssid>"
     }
@@ -137,8 +137,9 @@ class DashWifiManager(
 
         val request = NetworkRequest.Builder()
             .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
-            .setNetworkSpecifier(specBuilder.build())
-            .build()
+                .removeCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+                    .setNetworkSpecifier(specBuilder.build())
+                        .build()
 
         val cb = object : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
